@@ -8,8 +8,8 @@ app.use(express.json())
 const redis = require('redis')
 
 const redisClient = redis.createClient({
-    host: "myredis",
-    port: 6379
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT
 })
 
 redisClient.on("connect", () => {
@@ -19,11 +19,11 @@ redisClient.on("connect", () => {
 const { Pool } = require('pg')
 
 const pgClient = new Pool({
-    user: "postgres",
-    password: "mysecretpass",
-    database: "postgres",
-    host: "mypg",
-    port: "5432"
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT
 })
 
 pgClient.query('CREATE TABLE IF NOT EXISTS martial_arts (ID SERIAL PRIMARY KEY, name VARCHAR(30))')
@@ -98,3 +98,5 @@ const PORT = 5000
 app.listen(PORT, () => {
     console.log(`API listening on port ${PORT}`)
 })
+
+//test

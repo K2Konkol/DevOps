@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  myredis:
+    image: 'redis:alpine'
+
+  mypg:
+    image: 'postgres:alpine'
+    environment:
+      - POSTGRES_PASSWORD=mysecretpass
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+    volumes: 
+      - ./pgdata:/var/lib/postgresql/data
+
+  myapi:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./mybackend
+    command:
+      sh -c "node index.js"
+    volumes:
+      - /opt/app/node_modules
+      - ./mybackend:/opt/app
+    environment:
+      - POSTGRES_PASSWORD=mysecretpass
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST=mypg
+      - POSTGRES_PORT=5432
+      - REDIS_HOST=myredis
+      - REDIS_PORT=6379
+
+  myweb:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./myfrontend
+    environment: 
+      CHOKIDAR_USEPOLLING: "true"
+    command:
+      sh -c "npm start"
+    volumes:
+      - /opt/app/node_modules
+      - ./myfrontend:/opt/app
+
+  mynginx:
+    restart: always
+    build: 
+      dockerfile: Dockerfile
+      context: ./mynginx
+    ports: 
+      - "9090:80"
+
+volumes:
+  api_data:
+  web_data:
+    
