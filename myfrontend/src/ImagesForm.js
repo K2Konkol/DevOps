@@ -1,76 +1,177 @@
-import React, {useState, useEffect} from "react";
-import axios from 'axios';
+import React, { Component } from "react";
+import UploadService from "./FileUpload";
 
-const ImagesForm = (props) => {
+export default class UploadImages extends Component {
+  constructor(props) {
+    super(props);
+    this.selectFiles = this.selectFiles.bind(this);
+    this.upload = this.upload.bind(this);
+    this.uploadImages = this.uploadImages.bind(this);
 
-    // let img1 = yourFile1
-    // let img2 = yourFile2
-    const formData = new FormData();
-    // It is of paramount importance for these to have the same name (the first paramater - here 'images')else multer will give you a very cryptic error
-    formData.append("images", "image1");
-    formData.append("images", "image2");
-    // you can of course append anything else you'd like
-    // answerFormData.append("joke", "this is a poor mama joke");
+    this.state = {
+      selectedFiles: undefined,
+      previewImages: [],
+      progressInfos: [],
+      message: [],
 
-    axios({
-        method: "POST",
-        url: "/api/images",
-        data: formData,
-        headers: {
-            "Content-Type": "multipart/form-data"
+      imageInfos: [],
+    };
+  }
+
+  componentDidMount() {
+    UploadService.getFiles().then((response) => {
+      this.setState({
+        imageInfos: response.data,
+      });
+    });
+  }
+
+  selectFiles(event) {
+    let images = [];
+
+    for (let i = 0; i < event.target.files.length; i++) {
+      images.push(URL.createObjectURL(event.target.files[i]))
+    }
+
+    this.setState({
+      progressInfos: [],
+      message: [],
+      selectedFiles: event.target.files,
+      previewImages: images
+    });
+  }
+
+  upload(idx, file) {
+    let _progressInfos = [...this.state.progressInfos];
+
+    UploadService.upload(file, (event) => {
+      _progressInfos[idx].percentage = Math.round((100 * event.loaded) / event.total);
+      this.setState({
+        progressInfos: _progressInfos,
+      });
+    })
+      .then(() => {
+        this.setState((prev) => {
+          let nextMessage = [...prev.message, "Uploaded the image successfully: " + file.name];
+          return {
+            message: nextMessage
+          };
+        });
+
+        return UploadService.getFiles();
+      })
+      .then((files) => {
+        this.setState({
+          imageInfos: files.data,
+        });
+      })
+      .catch(() => {
+        _progressInfos[idx].percentage = 0;
+        this.setState((prev) => {
+          let nextMessage = [...prev.message, "Could not upload the image: " + file.name];
+          return {
+            progressInfos: _progressInfos,
+            message: nextMessage
+          };
+        });
+      });
+  }
+
+  uploadImages() {
+    const selectedFiles = this.state.selectedFiles;
+
+    let _progressInfos = [];
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      _progressInfos.push({ percentage: 0, fileName: selectedFiles[i].name });
+    }
+
+    this.setState(
+      {
+        progressInfos: _progressInfos,
+        message: [],
+      },
+      () => {
+        for (let i = 0; i < selectedFiles.length; i++) {
+          this.upload(i, selectedFiles[i]);
         }
-    })
-        .then(response => {
-                if (response.status === 200) {
-                    console.log("Success, firm added")
-                } else {
-                    console.log("Error occurred")
-                }
-            }
-        ).catch(e => {
-        console.log(e)
-    })
-    return (
-        <>
-            {/* <input type='text' value={title} onChange={event => setTitle(event.target.value)}/><br/>
-            <input type='text' value={body} onChange={event => setBody(event.target.value)}/><br/> */}
-
-            <input type='submit' value='OK' />
-        </>
+      }
     );
+  }
 
-};
+  render() {
+    const { selectedFiles, previewImages, progressInfos, message, imageInfos } = this.state;
 
+    return (
+      <div>
+        <div className="row">
+          <div className="col-8">
+            <label className="btn btn-default p-0">
+              <input type="file" multiple accept="image/*" onChange={this.selectFiles} />
+            </label>
+          </div>
 
-// const ImagesForm = (props) => {
-//     const [title, setTitle] = useState("");
-//     const [body, setBody] = useState("");
+          <div className="col-4">
+            <button
+              className="btn btn-success btn-sm"
+              disabled={!selectedFiles}
+              onClick={this.uploadImages}
+            >
+              Upload
+            </button>
+          </div>
+        </div>
 
-//     const handleSubmit = (event) => {
-//         console.log(`Dane do wysłania ${title} ${body}`);
+        {progressInfos &&
+          progressInfos.map((progressInfo, index) => (
+            <div className="mb-2" key={index}>
+              <span>{progressInfo.fileName}</span>
+              <div className="progress">
+                <div
+                  className="progress-bar progress-bar-info"
+                  role="progressbar"
+                  aria-valuenow={progressInfo.percentage}
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style={{ width: progressInfo.percentage + "%" }}
+                >
+                  {progressInfo.percentage}%
+                </div>
+              </div>
+            </div>
+          ))}
 
-//         axios.post('https://jsonplaceholder.typicode.com/posts', {
-//             title: title,
-//             body: body,
-//             userId: 1
-//         })
-//         .then(function (response) {
-//             console.log(response);
-//           })
-//         .catch(function (error) {
-//             console.log(error);
-//           });
-//     };
+        {previewImages && (
+          <div>
+            {previewImages.map((img, i) => {
+              return <img className="preview" src={img} alt={"image-" + i}  key={i}/>;
+            })}
+          </div>
+        )}
 
-//     return (
-//         <>
-//             <input type='text' value={title} onChange={event => setTitle(event.target.value)}/><br/>
-//             <input type='text' value={body} onChange={event => setBody(event.target.value)}/><br/>
+        {message.length > 0 && (
+          <div className="alert alert-secondary mt-2" role="alert">
+            <ul>
+              {message.map((item, i) => {
+                return <li key={i}>{item}</li>;
+              })}
+            </ul>
+          </div>
+        )}
 
-//             <input type='submit' value='OK' onClick={handleSubmit}/>
-//         </>
-//     );
-
-// };
-
-export default ImagesForm;
+        <div className="card mt-3">
+          <div className="card-header">List of Files</div>
+          <ul className="list-group list-group-flush">
+            {imageInfos &&
+              imageInfos.map((img, index) => (
+                <li className="list-group-item" key={index}>
+                  <p><a href={img.url}>{img.name}</a></p>
+                  <img src={img.url} alt={img.name} height="80px" />
+                </li>
+              ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+}

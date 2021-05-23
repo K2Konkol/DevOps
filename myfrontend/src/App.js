@@ -1,7 +1,7 @@
 import './App.css';
-import ImagesForm from "./ImagesForm";
 import MartialArts from "./MartialArts";
 import ModifyMartialArt from "./ModifyMartialArt";
+import UploadImages from "./ImagesForm";
 
 import {useState} from "react";
 // import MyForm from './MyForm';
@@ -22,9 +22,10 @@ function App() {
 
      {/* <Post onPost={initialValue} changeParentHandler={setInitialValue}/> */}
      {<MartialArts current={initialValue} changeParentHandler={setInitialValue} />}
-     <ModifyMartialArt />
-     <ImagesForm />
+     <ModifyMartialArt /> <br />
+     <UploadImages />
     </div>
+    
   );
 }
 
