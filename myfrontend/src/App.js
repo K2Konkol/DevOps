@@ -1,4 +1,4 @@
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import MartialArts from "./MartialArts";
 import ModifyMartialArt from "./ModifyMartialArt";
 import UploadImages from "./ImagesForm";
