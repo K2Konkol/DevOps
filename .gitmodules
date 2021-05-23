@@ -1,0 +1,4 @@
+[submodule "BrightnessVerifier"]
+	path = BrightnessVerifier
+	url = https://github.com/K2Konkol/BrightnessVerifier.git
+	branch = amqp

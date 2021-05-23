@@ -1,6 +1,9 @@
 version: '3'
 
 services:
+  mybroker:
+    image: 'rabbitmq:3-alpine'
+
   myredis:
     image: 'redis:alpine'
 
@@ -31,6 +34,22 @@ services:
       - POSTGRES_PORT=5432
       - REDIS_HOST=myredis
       - REDIS_PORT=6379
+    ports:
+      - "5000:5000"
+
+  myimageuploader:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./myimageuploader
+    command:
+      sh -c "node index.js"
+    volumes:
+      - /opt/app/node_modules
+      - ./myimageuploader:/opt/app  
+      - web_data:/opt/app/shared
+    ports:
+      - "5050:5050"      
 
   myweb:
     restart: always
@@ -53,7 +72,18 @@ services:
     ports: 
       - "9090:80"
 
+  myworker:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./BrightnessVerifier
+    command:
+      scala verifier.jar
+    depends_on: 
+      - mybroker
+    volumes: 
+      - web_data:/opt/app/shared
+
 volumes:
-  api_data:
   web_data:
     

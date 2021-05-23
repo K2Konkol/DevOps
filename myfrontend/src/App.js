@@ -1,4 +1,5 @@
 import './App.css';
+import ImagesForm from "./ImagesForm";
 import MartialArts from "./MartialArts";
 import ModifyMartialArt from "./ModifyMartialArt";
 
@@ -22,6 +23,7 @@ function App() {
      {/* <Post onPost={initialValue} changeParentHandler={setInitialValue}/> */}
      {<MartialArts current={initialValue} changeParentHandler={setInitialValue} />}
      <ModifyMartialArt />
+     <ImagesForm />
     </div>
   );
 }
