@@ -14,7 +14,7 @@ const upload = async (req, res) => {
     res.status(200).send({
       message: "Uploaded the file successfully: " + req.file.originalname,
     })
-    notify.sendImage(req.file.originalname)
+    notify.sendImage( req.body.category.toLowerCase() + '_' +  req.file.originalname)
     
   } catch (err) {
     console.log(err)

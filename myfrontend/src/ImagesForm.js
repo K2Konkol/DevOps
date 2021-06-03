@@ -44,7 +44,7 @@ export default class UploadImages extends Component {
   upload(idx, file) {
     let _progressInfos = [...this.state.progressInfos];
 
-    UploadService.upload(file, (event) => {
+    UploadService.upload(file, this.props.current, (event) => {
       _progressInfos[idx].percentage = Math.round((100 * event.loaded) / event.total);
       this.setState({
         progressInfos: _progressInfos,
@@ -52,7 +52,7 @@ export default class UploadImages extends Component {
     })
       .then(() => {
         this.setState((prev) => {
-          let nextMessage = [...prev.message, "Uploaded the image successfully: " + file.name];
+          let nextMessage = [...prev.message, "Uploaded the image successfully: " +  file.name];
           return {
             message: nextMessage
           };
@@ -163,12 +163,14 @@ export default class UploadImages extends Component {
           <div className="card-header">List of Files</div>
           <ul className="list-group list-group-flush">
             {imageInfos &&
-              imageInfos.map((img, index) => (
+              imageInfos.filter((img, index) => { return img.name.toLowerCase().includes(this.props.current.toLowerCase()) })
+                        .map((img, index) => (
                 <li className="list-group-item" key={index}>
                   <p><a href={img.url}>{img.name}</a></p>
                   <img src={img.url} alt={img.name} height="80px" />
                 </li>
-              ))}
+              ))
+              }
           </ul>
         </div>
       </div>

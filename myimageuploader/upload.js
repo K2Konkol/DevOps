@@ -7,8 +7,8 @@ let storage = multer.diskStorage({
     cb(null, __basedir + "/shared/incoming/")
   },
   filename: (req, file, cb) => {
-    console.log(file.originalname)
-    cb(null, file.originalname)
+    console.log(req.body.category + '_' + file.originalname)    
+    cb(null, req.body.category.toLowerCase() + '_' +  file.originalname)
   },
 })
 
