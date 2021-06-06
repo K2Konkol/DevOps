@@ -8,7 +8,7 @@ metadata:
 
 spec: 
   containers:
-    - name: my-nginx
+    - name: mynginx
       image: nginx:alpine
       ports: 
         - containerPort: 80

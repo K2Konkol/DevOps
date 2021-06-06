@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: myimageuploader
+spec:
+  ports:
+    - port: 5050
+      targetPort: 5050
+  selector:
+    svc: myimageuploader
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myimageuploader
+  labels:
+    svc: myimageuploader
+spec:
+  template:
+    metadata:
+      name: myimageuploader
+      labels:
+        svc: myimageuploader
+    spec:
+      volumes:
+        - name: incoming
+          hostPath:
+            path: /opt/app/shared/incoming
+        - name: filtered
+          hostPath:
+            path: /opt/app/shared/filtered
+      containers:
+        - name: my-imageuploader-container
+          image: kkonkol/myimageuploader
+          command: ["sh"]
+          args: ["-c", "node index.js"]
+          ports:
+            - containerPort: 5050
+          volumeMounts:
+            - name: incoming
+              mountPath: /shared/incoming
+  replicas: 1
+  selector:
+    matchLabels:
+      svc: myimageuploader
+  
+  
+  

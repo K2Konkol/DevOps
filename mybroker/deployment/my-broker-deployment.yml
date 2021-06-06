@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mybroker
+spec:
+  ports:
+    - port: 5672
+      targetPort: 5672
+  selector:
+    svc: mybroker
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: mybroker
+  labels:
+    svc: mybroker
+
+spec:
+  template:
+    metadata:
+      name: mybroker-pod
+      labels:
+        svc: mybroker
+    spec:
+      containers:
+        - name: mybroker-container
+          image: rabbitmq:3-alpine
+          ports:
+            - containerPort: 5672
+          
+  replicas: 1
+  selector:
+    matchLabels:
+      svc: mybroker

@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: myweb
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    svc: myweb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myweb
+  labels:
+    svc: myweb
+
+spec:
+  template:
+    metadata:
+      name: my-frontend-pod
+      labels:
+        svc: myweb
+    spec:
+      containers:
+        - name: my-frontend-container
+          image: kkonkol/myfrontend
+          command: ["sh"]
+          args: ["-c", "npm start"]
+  replicas: 1
+  selector:
+    matchLabels:
+      svc: myweb
+  
+  
+  
