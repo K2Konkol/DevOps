@@ -1,7 +1,7 @@
 const uploadFile = require("./upload")
 const notify = require("./notify")
 const fs = require("fs")
-const baseUrl = "http://localhost:5050/images/"
+const baseUrl = "http://localhost/img/images/"
 
 const upload = async (req, res) => {
   try {
@@ -32,7 +32,7 @@ const upload = async (req, res) => {
 }
 
 const getListFiles = (req, res) => {
-  const directoryPath = __basedir + "/shared/incoming/"
+  const directoryPath = __basedir + "/shared/filtered/"
 
   fs.readdir(directoryPath, function (err, files) {
     if (err) {
@@ -56,7 +56,7 @@ const getListFiles = (req, res) => {
 
 const download = (req, res) => {
   const fileName = req.params.name
-  const directoryPath = __basedir + "/shared/incoming/"
+  const directoryPath = __basedir + "/shared/filtered/"
 
   res.download(directoryPath + fileName, fileName, (err) => {
     if (err) {

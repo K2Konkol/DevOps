@@ -1,5 +1,6 @@
 kubectl apply -f mybroker\deployment\my-broker-deployment.yml
 kubectl apply -f pv-local\pv-local.yml 
+kubectl apply -f pv-local\images-pvc.yml 
 kubectl apply -f pv-local\postgres-pvc.yml 
 kubectl apply -f pv-local\postgres-configMap.yml
 kubectl apply -f pv-local\postgres-secret.yml 
@@ -9,5 +10,5 @@ kubectl apply -f mybackend\deployment\my-backend-deployment.yml
 kubectl apply -f myimageuploader\deployment\my-imageuploader-deployment.yml
 kubectl apply -f BrightnessVerifier\deployment\my-brightnessverifier-deployment.yml
 kubectl apply -f myfrontend\deployment\my-frontend-deployment.yml
-kubectl apply -f mynginx\deployment\my-nginx-deployment.yml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.46.0/deploy/static/provider/cloud/deploy.yaml
+kubectl apply -f myingress\my-ingress.yml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.47.0/deploy/static/provider/cloud/deploy.yaml

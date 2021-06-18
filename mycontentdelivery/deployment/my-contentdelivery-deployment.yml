@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapi
+spec:
+  ports:
+    - port: 5000
+      targetPort: 5000
+  selector:
+    svc: myapi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapi
+  labels:
+    svc: myapi
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: myapi
+      labels:
+            svc: myapi
+    spec:
+      containers:
+        - name: my-contentdelivery-container
+          image: kkonkol/mycontentdelivery
+          command: ["sh"]
+          args: ["-c", "node index.js"]
+          ports:
+            - containerPort: 5000
+          env:
+            - name: REDIS_HOST
+              value: myredis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mypostgres-secret
+                  key: PGSECRET
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: mypostgres-config
+                  key: PGDATABASE
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: mypostgres-config
+                  key: PGUSER                  
+            - name: POSTGRES_HOST
+              value: mypg
+            - name: POSTGRES_PORT
+              value: "5432"
+  selector:
+    matchLabels:
+      svc: myapi
+
+  
+  
+  
