@@ -31,7 +31,7 @@ const ModifyMartialArt = (props) => {
     }
 
     const handleDelete = (props) => {
-        axios.post('/api/martialArts/', {
+        axios.delete('/api/martialArts/', {
             name: name,
         })
         .then(function (response) {
@@ -46,9 +46,9 @@ const ModifyMartialArt = (props) => {
         <>
             <input type='text' value={name} onChange={event => setName(event.target.value)}/><br/>
 
-            <input type='submit' value='OK' onClick={handleApply}/>
+            <input type='submit' value='Add' onClick={handleApply}/>
             <input type='submit' value='Update' onClick={handleUpdate}/>
-            <input type='submit' value='Update' onClick={handleDelete}/>
+            <input type='submit' value='Delete' onClick={handleDelete}/>
         </>
     );
 

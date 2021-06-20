@@ -20,12 +20,12 @@ services:
     restart: always
     build:
       dockerfile: Dockerfile
-      context: ./mybackend
+      context: ./mycontentdelivery
     command:
       sh -c "node index.js"
     volumes:
       - /opt/app/node_modules
-      - ./mybackend:/opt/app
+      - ./mycontentdelivery:/opt/app
     environment:
       - POSTGRES_PASSWORD=mysecretpass
       - POSTGRES_DB=postgres
