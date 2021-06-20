@@ -1,7 +1,7 @@
 const uploadFile = require("./upload")
 const notify = require("./notify")
 const fs = require("fs")
-const baseUrl = "http://localhost/img/images/"
+const baseUrl = "/img/images/"
 
 const upload = async (req, res) => {
   try {

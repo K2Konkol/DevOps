@@ -54,7 +54,7 @@ services:
   myweb:
     restart: always
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
       context: ./myfrontend
     environment: 
       CHOKIDAR_USEPOLLING: "true"

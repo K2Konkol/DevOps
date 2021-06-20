@@ -16,12 +16,11 @@ function App() {
     return art ? art.name : ""
   }
 
-
   return (
     <div>
      {<MartialArts martialArt={martialArt} handleMartialArt={setMartialArt} handleCurrent={setCurrent} />}
      <h2>{getCurrent()}</h2>
-     <ModifyMartialArt /> <br />
+     <ModifyMartialArt currentId={current}/> <br />
      {/* <PhotoGallery category={getCurrent()} style={{
         width: '66%', height: '35%'}} /> */}
      <UploadImages current={getCurrent()}/>

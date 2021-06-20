@@ -80,15 +80,15 @@ const createMartialArt = (req, res) => {
 }
 
 const updateMartialArtById = (req, res) => {
-    const { id } = parseInt(req.params.id)
+    const id = parseInt(req.params.id)
     const { name } = req.body
+    console.log(`Received id:${id}, name:${name}`)
 
     const dbQuery = new Promise((resolve, reject) => {
-        pgClient.query('UPDATE martial_arts SET (name) VALUES ($2) WHERE (id) = ($1) ', [id, name], (error, results) => {
+        pgClient.query('UPDATE martial_arts SET name = $2 WHERE id = $1 ', [id, name], (error, results) => {
             if (error) {
                 throw error
             }
-            res.status(201).send(`Updated Martial Art with ID: ${id}`)
             resolve(id)
         })
     })
@@ -98,19 +98,18 @@ const updateMartialArtById = (req, res) => {
                 res.status(500).json({ error: error })
                 console.log(error)
             }
+            res.status(201).send(`Updated Martial Art with ID: ${id}`)
         })
     )
 }
 
 const deleteMartialArtById = (req, res) => {
-    const { id } = parseInt(req.params.id)
-
+    const id = parseInt(req.params.id)
     const dbQuery = new Promise((resolve, reject) => {
         pgClient.query('DELETE FROM martial_arts WHERE (id) = ($1) ', [id], (error, results) => {
             if (error) {
                 throw error
             }
-            res.status(202).send(`Deleted Martial Art with ID: ${id}`)
             resolve(id)
         })
     })
@@ -120,6 +119,7 @@ const deleteMartialArtById = (req, res) => {
                 res.status(500).json({ error: error })
                 console.log(error)
             }
+            res.status(202).send(`Deleted Martial Art with ID: ${id}`)
         })
     )
 }
