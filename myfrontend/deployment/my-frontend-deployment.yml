@@ -4,8 +4,8 @@ metadata:
   name: myweb
 spec:
   ports:
-    - port: 3000
-      targetPort: 3000
+    - port: 80
+      targetPort: 80
   selector:
     svc: myweb
 ---
@@ -26,8 +26,6 @@ spec:
       containers:
         - name: my-frontend-container
           image: kkonkol/myfrontend
-          command: ["sh"]
-          args: ["-c", "npm start"]
   replicas: 1
   selector:
     matchLabels:

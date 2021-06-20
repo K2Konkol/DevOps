@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import axios from 'axios';
 
-const ModifyMartialArt = (props) => {
+const ModifyMartialArt = ({currentId}) => {
     const [name, setName] = useState("");
 
     const handleApply = (event) => {
-        console.log(`Dane do wysłania!!! ${name}`);
+        console.log(`Sending: ${name}`);
 
         axios.post('/api/martialArts', {
             name: name,
@@ -18,8 +18,10 @@ const ModifyMartialArt = (props) => {
           });
     };
 
-    const handleUpdate = (props) => {
-        axios.put('/api/martialArts', {
+    const handleUpdate = (event) => {
+        console.log(`Sending: ${currentId}, ${name}`);
+
+        axios.put(`/api/martialArts/${currentId}`, {
             name: name,
         })
         .then(function (response) {
@@ -31,9 +33,8 @@ const ModifyMartialArt = (props) => {
     }
 
     const handleDelete = (props) => {
-        axios.post('/api/martialArts/', {
-            name: name,
-        })
+        console.log(currentId)
+        axios.delete(`/api/martialArts/${currentId}`)
         .then(function (response) {
             console.log(response);
           })
@@ -46,9 +47,9 @@ const ModifyMartialArt = (props) => {
         <>
             <input type='text' value={name} onChange={event => setName(event.target.value)}/><br/>
 
-            <input type='submit' value='OK' onClick={handleApply}/>
+            <input type='submit' value='Add' onClick={handleApply}/>
             <input type='submit' value='Update' onClick={handleUpdate}/>
-            <input type='submit' value='Update' onClick={handleDelete}/>
+            <input type='submit' value='Delete' onClick={handleDelete}/>
         </>
     );
 

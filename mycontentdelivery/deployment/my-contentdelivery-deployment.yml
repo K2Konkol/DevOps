@@ -24,8 +24,8 @@ spec:
             svc: myapi
     spec:
       containers:
-        - name: my-backend-container
-          image: kkonkol/mybackend
+        - name: my-contentdelivery-container
+          image: kkonkol/mycontentdelivery
           command: ["sh"]
           args: ["-c", "node index.js"]
           ports:

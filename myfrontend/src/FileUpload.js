@@ -7,7 +7,7 @@ class FileUploadService {
     formData.append("file", file);
 
     console.log(formData)
-    return http.post("/images", formData, {
+    return http.post("/img/images", formData, {
       headers: {
         "Content-Type": "multipart/form-data"
       },
@@ -16,7 +16,7 @@ class FileUploadService {
   }
 
   getFiles() {
-    return http.get("/images");
+    return http.get("/img/images");
   }
 }
 

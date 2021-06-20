@@ -1,10 +1,3 @@
-const express = require("express")
-const cors = require('cors')
-const app = express()
-
-app.use(cors())
-app.use(express.json())
-
 const redis = require('redis')
 
 const redisClient = redis.createClient({
@@ -86,15 +79,55 @@ const createMartialArt = (req, res) => {
     )
 }
 
-app.get('/', (req, res) => {
-    res.send("Hello World from express server")
-})
+const updateMartialArtById = (req, res) => {
+    const id = parseInt(req.params.id)
+    const { name } = req.body
+    console.log(`Received id:${id}, name:${name}`)
 
-app.get("/martialArts", getMartialArts)
-app.get("/martialArts/:id", getMartialArtById)
-app.post("/martialArts", createMartialArt)
+    const dbQuery = new Promise((resolve, reject) => {
+        pgClient.query('UPDATE martial_arts SET name = $2 WHERE id = $1 ', [id, name], (error, results) => {
+            if (error) {
+                throw error
+            }
+            resolve(id)
+        })
+    })
+    dbQuery.then(value =>
+        redisClient.set(value, name, (error, results) => {
+            if (error) {
+                res.status(500).json({ error: error })
+                console.log(error)
+            }
+            res.status(201).send(`Updated Martial Art with ID: ${id}`)
+        })
+    )
+}
 
-const PORT = 5000
-app.listen(PORT, () => {
-    console.log(`API listening on port ${PORT}`)
-})
+const deleteMartialArtById = (req, res) => {
+    const id = parseInt(req.params.id)
+    const dbQuery = new Promise((resolve, reject) => {
+        pgClient.query('DELETE FROM martial_arts WHERE (id) = ($1) ', [id], (error, results) => {
+            if (error) {
+                throw error
+            }
+            resolve(id)
+        })
+    })
+    dbQuery.then(value =>
+        redisClient.del(value, (error, results) => {
+            if (error) {
+                res.status(500).json({ error: error })
+                console.log(error)
+            }
+            res.status(202).send(`Deleted Martial Art with ID: ${id}`)
+        })
+    )
+}
+
+module.exports = {
+    createMartialArt,
+    deleteMartialArtById,
+    getMartialArts,
+    getMartialArtById,
+    updateMartialArtById,
+}

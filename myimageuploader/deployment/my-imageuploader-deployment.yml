@@ -24,11 +24,11 @@ spec:
     spec:
       volumes:
         - name: incoming
-          hostPath:
-            path: /opt/app/shared/incoming
+          persistentVolumeClaim:
+            claimName: incoming-pvc
         - name: filtered
-          hostPath:
-            path: /opt/app/shared/filtered
+          persistentVolumeClaim:
+            claimName: filtered-pvc
       containers:
         - name: my-imageuploader-container
           image: kkonkol/myimageuploader
@@ -38,7 +38,9 @@ spec:
             - containerPort: 5050
           volumeMounts:
             - name: incoming
-              mountPath: /shared/incoming
+              mountPath: /opt/app/shared/incoming
+            - name: filtered
+              mountPath: /opt/app/shared/filtered
   replicas: 1
   selector:
     matchLabels:

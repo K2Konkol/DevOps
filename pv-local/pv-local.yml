@@ -13,3 +13,35 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/c/persistance"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-local2
+  labels:
+    type: local
+
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/c/persistance2"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-local3
+  labels:
+    type: local
+
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/c/persistance3"

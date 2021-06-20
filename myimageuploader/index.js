@@ -8,6 +8,10 @@ global.__basedir = __dirname;
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 
+
+app.get('/', (req, res) => {
+    res.send("Hello World from express server")
+})
 app.post("/images", controller.upload)
 app.get("/images", controller.getListFiles)
 app.get("/images/:name", controller.download)
