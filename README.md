@@ -6,7 +6,7 @@ It consists of:
 * MyFrontend application (React + NGINX)
 * MyContentDelivery REST API writing text content into Postgres db + Redis cache (Node.js)
 * MyImageUploader RESP API writing images to shared volume (Node.js)
-* BrightnessVerifier - event-based image processing component
+* BrightnessVerifier - event-based image processing component (Scala)
 * RabbitMQ broker
 
 Deployment using docker-compose or k8s: 
